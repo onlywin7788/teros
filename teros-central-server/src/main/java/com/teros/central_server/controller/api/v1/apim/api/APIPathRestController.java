@@ -43,13 +43,6 @@ public class APIPathRestController {
         apiPathService.saveAPIPath(param);
     }
 
-    /*
-    @PostMapping(value = "/api-path/{id}")
-    public Long updateAPIPath(@PathVariable long id, @RequestParam(required = true) String methodName) {
-        return apiPathService.updateAPI(id, methodName);
-    }
-    */
-
     @PutMapping(value = "/api-path/{id}")
     public Long updateAPIPath(@PathVariable long id, @RequestBody ModelParamAPIPath param) {
         return apiPathService.updateAPIPath(id, param);

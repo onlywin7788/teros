@@ -1,0 +1,24 @@
+server:
+  port: 58081
+
+spring:
+  application:
+    name: teros-data-control-manager
+  devtools:
+    livereload:
+      enabled: true
+  main:
+    allow-bean-definition-overriding: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+eureka:
+  client:
+    registryFetchIntervalSeconds: 5
+    enabled: true
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://10.10.2.102:8761/eureka}
+  instance:
+    preferIpAddress: true
