@@ -1,9 +1,9 @@
 server:
-  port: 48082
+  port: 48081
 
 spring:
   application:
-    name: teros-api-gateway
+    name: teros-api-control-manager
   main:
     allow-bean-definition-overriding: true
 management:
