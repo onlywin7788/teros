@@ -1,0 +1,25 @@
+server:
+  port: 58082
+
+## classpath
+loader:
+  path: E:/project/teros/ext
+
+spring:
+  application:
+    name: teros-data-service
+  main:
+    allow-bean-definition-overriding: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+eureka:
+  client:
+    registryFetchIntervalSeconds: 5
+    enabled: true
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://10.10.2.102:8761/eureka}
+  instance:
+    preferIpAddress: true
