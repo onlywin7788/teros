@@ -40,6 +40,7 @@ public class ProductRestController {
 
     @PutMapping(value = "/product/{id}")
     public Long updateProduct(@PathVariable long id, @RequestBody ModelParamProduct modelParamProduct) {
+
         return productService.updateProduct(id, modelParamProduct);
     }
 

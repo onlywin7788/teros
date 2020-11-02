@@ -23,7 +23,9 @@ public class Application implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
+		/*
 		String configPath ="/opt/config/config.json";
-		executorService.execute(configPath);
+		executorService.execute();
+		 */
 	}
 }

@@ -11,9 +11,20 @@ public class ExecutorService {
         this.executor = executor;
     }
 
-    public void execute(String configPath) throws Exception {
+    public void load(String configPath) throws Exception {
         executor.load(configPath);
+    }
+
+    public void executeAssignData(String data) throws Exception {
+        executor.preAssignMessage(data);
+    }
+
+    public void execute() throws Exception {
         executor.execute();
+        executor.unload();
+    }
+
+    public void unload() throws Exception {
         executor.unload();
     }
 }

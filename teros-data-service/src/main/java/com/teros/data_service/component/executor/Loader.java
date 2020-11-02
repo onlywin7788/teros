@@ -37,7 +37,7 @@ public class Loader {
         try {
             // class dynamic loading
             Class loadInputConnector = Class.forName("com.ext.teros.message_connector.rest.Executor");
-            Class loadOutputConnector = Class.forName("com.ext.teros.message_connector.file.Executor");
+            Class loadOutputConnector = Class.forName("com.ext.teros.message_connector.kafka.Executor");
             Class loadMessageProcessor = Class.forName("com.ext.teros.message_processor.Executor");
 
             Object inputConnectorInstance = loadInputConnector.getDeclaredConstructor().newInstance();

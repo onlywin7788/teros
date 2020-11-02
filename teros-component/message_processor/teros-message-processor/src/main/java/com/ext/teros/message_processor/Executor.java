@@ -1,13 +1,18 @@
 package com.ext.teros.message_processor;
 
-
 import com.ext.teros.message_processor.spec.MessageProcessorSpec;
 
 public class Executor implements MessageProcessorSpec {
 
+    String processMessage = "";
+
+    @Override
+    public void loadConfig(String s) throws Exception {
+    }
+
     @Override
     public void initialize() throws Exception {
-        System.out.println("INIT:PROCESSOR");
+
     }
 
     @Override
@@ -16,8 +21,8 @@ public class Executor implements MessageProcessorSpec {
     }
 
     @Override
-    public void input() throws Exception {
-
+    public void input(String s) throws Exception {
+        this.processMessage = s;
     }
 
     @Override
@@ -36,8 +41,8 @@ public class Executor implements MessageProcessorSpec {
     }
 
     @Override
-    public void output() throws Exception {
-
+    public String output() throws Exception {
+        return this.processMessage;
     }
 
     @Override

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class Processor{
+public class Processor {
 
     private final String PATTERN_SNDR = "SMDR";
     private final String PATTERN_RCVR = "RCVR";
@@ -37,6 +37,14 @@ public class Processor{
         messageProcessor = loader.getMessageProcessor();
         outputConnector = loader.getOutputConnector();
 
+        loadConfig(configPath);
+
+    }
+
+    public void loadConfig(String config) throws Exception {
+        inputConnector.loadConfig(config);
+        messageProcessor.loadConfig(config);
+        outputConnector.loadConfig(config);
     }
 
     public void initialize() throws Exception {
@@ -49,17 +57,69 @@ public class Processor{
         outputConnector.connect();
     }
 
+    public void open() throws Exception {
+        inputConnector.open();
+        outputConnector.open();
+    }
+
     public void disconnect() throws Exception {
         inputConnector.disconnect();
         outputConnector.disconnect();
     }
+
+    public void close() throws Exception {
+        inputConnector.close();
+        outputConnector.close();
+    }
+
 
     public void uninitialize() throws Exception {
         inputConnector.uninitialize();
         outputConnector.uninitialize();
     }
 
+    public void inputConnectorSetData(String data) throws Exception {
+        inputConnector.setData(data);
+    }
+
+    public String inputConnectorGetData() throws Exception {
+        return inputConnector.getData();
+    }
+
+    public void outputConnectorSetData(String data) throws Exception {
+        outputConnector.setData(data);
+    }
+
+    public String  outputConnectorGetData(String data) throws Exception {
+        return outputConnector.getData();
+    }
+
+
     public void processSNDR() throws Exception {
+
+        String data = "";
+
+        // input connector
+        inputConnector.input();
+        data = inputConnector.getData();
+
+        log.info("--------------------- input ---------------------------");
+        log.info(data);
+
+        // processor
+        messageProcessor.input(data);
+        data = messageProcessor.output();
+
+        log.info("--------------------- processor ---------------------------");
+        log.info(data);
+
+        // output connector
+        outputConnector.setData(data);
+        outputConnector.output();
+
+        log.info("--------------------- output ---------------------------");
+        log.info(data);
+
     }
 
     public void processRCVR() throws Exception {
@@ -73,9 +133,11 @@ public class Processor{
 
     public void process() throws Exception {
 
-//        String pattern = loader.getInterfacePattern();
-
         String pattern = PATTERN_SNDR;
+
+        initialize();
+        connect();
+        open();
 
         if (pattern.equals(PATTERN_SNDR) == true) {
             processSNDR();
@@ -88,5 +150,9 @@ public class Processor{
         } else {
             log.error(String.format("unknown interface pattern : [%s]", pattern));
         }
+
+        close();
+        disconnect();
+        uninitialize();
     }
 }

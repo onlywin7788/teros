@@ -1,5 +1,6 @@
 package com.teros.data_service.component.executor;
 
+import com.google.inject.internal.cglib.core.$ProcessArrayCallback;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -21,14 +22,12 @@ public class Executor {
         }
     }
 
+    public void preAssignMessage(String data) throws Exception {
+        processor.inputConnectorSetData(data);
+    }
+
     public void execute() throws Exception {
-
-        processor.initialize();
-        processor.connect();
         processor.process();
-        processor.disconnect();
-        processor.uninitialize();
-
     }
 
     public void unload() throws Exception {

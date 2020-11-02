@@ -1,6 +1,6 @@
 package com.teroa.api_control_manager.controller.v1.Router;
 
-import com.teroa.api_control_manager.model.Route;
+import com.teroa.api_control_manager.model.RouteListModel;
 import com.teroa.api_control_manager.service.GatewayService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,7 +44,12 @@ public class RouterController {
     }
 
     @GetMapping(value = "/api-gw/refresh")
-    public Route getApps() {
-        return gatewayService.getRoute();
+    public RouteListModel getApps() {
+        /*
+        return gatewayService.get();
+
+        */
+
+        return null;
     }
 }

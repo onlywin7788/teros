@@ -3,9 +3,17 @@ package com.ext.teros.message_connector.rest;
 import com.ext.teros.message_connector.spec.MessageConnectorSpec;
 
 public class Executor implements MessageConnectorSpec {
+
+    String connectorMessage = "";
+
+    @Override
+    public void loadConfig(String s) throws Exception {
+
+    }
+
     @Override
     public void initialize() throws Exception {
-        System.out.println("INIT:REST");
+
     }
 
     @Override
@@ -19,32 +27,30 @@ public class Executor implements MessageConnectorSpec {
     }
 
     @Override
-    public void preAcquire() throws Exception {
+    public void preInput() throws Exception {
 
     }
 
     @Override
-    public void acquire() throws Exception {
+    public void input() throws Exception {
+    }
+
+    @Override
+    public void postInput() throws Exception {
 
     }
 
     @Override
-    public void postAcquire() throws Exception {
+    public void preOutput() throws Exception {
 
     }
 
     @Override
-    public void preDelivery() throws Exception {
-
+    public void output() throws Exception {
     }
 
     @Override
-    public void delivery() throws Exception {
-
-    }
-
-    @Override
-    public void postDelivery() throws Exception {
+    public void postOutput() throws Exception {
 
     }
 
@@ -71,5 +77,15 @@ public class Executor implements MessageConnectorSpec {
     @Override
     public void uninitialize() throws Exception {
 
+    }
+
+    @Override
+    public String getData() throws Exception {
+        return connectorMessage;
+    }
+
+    @Override
+    public void setData(String s) throws Exception {
+        this.connectorMessage = s;
     }
 }

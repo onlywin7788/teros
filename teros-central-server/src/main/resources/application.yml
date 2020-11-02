@@ -20,12 +20,12 @@ spring:
   devtools:
     livereload:
       enabled: true
-  thymeleaf:
-    prefix: file:src/main/resources/templates/
-    cache: false
-    resources:
-      static-locations: file:src/main/resources/static/
-      cache-period: 0
+#  thymeleaf:
+#    prefix: file:src/main/resources/templates/
+#    cache: false
+#    resources:
+#      static-locations: file:src/main/resources/static/
+#      cache-period: 0
 eureka:
   client:
     registryFetchIntervalSeconds: 5

@@ -1,23 +1,23 @@
 package com.teroa.api_control_manager.service;
 
-import com.google.gson.Gson;
-import com.teroa.api_control_manager.model.Route;
+import com.teroa.api_control_manager.model.RouteListModel;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class GatewayService {
 
-    public Route getRoute(){
+    public RouteListModel createRouteList(String routeInfo){
 
-        Route route = Route.builder()
+        RouteListModel routeListModel = RouteListModel.builder()
                 .build();
 
         // set id
-        route.setId("TEST");
+        routeListModel.setId("TEST");
 
         // set predicates
         HashMap predicatesMap = new HashMap();
@@ -29,16 +29,21 @@ public class GatewayService {
         predicatesMap.put("args", predicatesArgsMap);
 
         predicatesList.add(predicatesMap);
-        route.setPredicates(predicatesList);
+        routeListModel.setPredicates(predicatesList);
 
         // set filter
         List<String> filterList = new ArrayList<String>();
         filterList.add("RewritePath=/app500,/APIC/DATA.json");
-        route.setFilters(filterList);
+        routeListModel.setFilters(filterList);
 
         // set uri
-        route.setUri("http://10.10.2.250:8080");
+        routeListModel.setUri("http://10.10.2.250:8080");
 
-        return route;
+        return routeListModel;
     }
+
+
+
+
+
 }

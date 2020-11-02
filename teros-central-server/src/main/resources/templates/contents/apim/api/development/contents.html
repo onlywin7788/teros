@@ -122,7 +122,7 @@
       send_insert_append(lastID);
 
       if (!alert("API 가 정상적으로 " + alert_title + "되었습니다.")) {
-        location.href = "/development/api";
+        location.href = "/apim/api/development";
       }
     }
 
@@ -156,7 +156,7 @@
     {
        if (confirm("해당 API 정보를 삭제하시겠습니까?") == true) {
            res = requestAPI("/v1/api/" + update_id, null, "DELETE");
-           location.href = "/development/api";
+           location.href = "/apim/api/development";
         }
     }
 
