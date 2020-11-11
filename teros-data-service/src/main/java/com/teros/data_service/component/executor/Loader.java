@@ -2,6 +2,9 @@ package com.teros.data_service.component.executor;
 
 import com.ext.teros.message_connector.spec.MessageConnectorSpec;
 import com.ext.teros.message_processor.spec.MessageProcessorSpec;
+import com.teros.data_service.common.file.CommonFile;
+import com.teros.data_service.common.parser.JsonParser;
+import com.teros.data_service.component.executor.config.model.GlobalOption;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
@@ -10,6 +13,15 @@ import org.springframework.stereotype.Component;
 @Setter
 @Component
 public class Loader {
+
+    private final CommonFile commonFile;
+    private final JsonParser jsonParser;
+
+    GlobalOption inputGlobalOption = new GlobalOption();
+    GlobalOption outputGlobalOption = new GlobalOption();
+    GlobalOption processorGlobalOption = new GlobalOption();
+
+    String configContents = "";
 
     // load component
     MessageConnectorSpec inputConnector = null;
@@ -21,7 +33,13 @@ public class Loader {
     String interfaceVersion;
     String interfacePattern;
 
-    public void load(String filePath) throws Exception{
+    public Loader(CommonFile commonFile
+            , JsonParser jsonParser) {
+        this.commonFile = commonFile;
+        this.jsonParser = jsonParser;
+    }
+
+    public void load(String filePath) throws Exception {
         try {
             loadConfig(filePath);
             loadComponent();
@@ -30,15 +48,34 @@ public class Loader {
         }
     }
 
+    public String getConfigContents() {
+        return configContents;
+    }
+
     private void loadConfig(String filePath) throws Exception {
+        configContents = commonFile.readFile(filePath);
+        String optionValue = "";
+
+        // global option - input component
+        optionValue = jsonParser.getJsonElementFromPath(configContents, "config.interface.input.component.path").getAsString();
+        inputGlobalOption.setPath(optionValue);
+
+        // global option - output component
+        optionValue = jsonParser.getJsonElementFromPath(configContents, "config.interface.output.component.path").getAsString();
+        outputGlobalOption.setPath(optionValue);
+
+        // global option - message processor
+        optionValue = jsonParser.getJsonElementFromPath(configContents, "config.interface.processor.component.path").getAsString();
+        processorGlobalOption.setPath(optionValue);
+
     }
 
     private void loadComponent() throws Exception {
         try {
             // class dynamic loading
-            Class loadInputConnector = Class.forName("com.ext.teros.message_connector.rest.Executor");
-            Class loadOutputConnector = Class.forName("com.ext.teros.message_connector.kafka.Executor");
-            Class loadMessageProcessor = Class.forName("com.ext.teros.message_processor.Executor");
+            Class loadInputConnector = Class.forName(inputGlobalOption.getPath());
+            Class loadOutputConnector = Class.forName(outputGlobalOption.getPath());
+            Class loadMessageProcessor = Class.forName(processorGlobalOption.getPath());
 
             Object inputConnectorInstance = loadInputConnector.getDeclaredConstructor().newInstance();
             Object outputConnectorInstance = loadOutputConnector.getDeclaredConstructor().newInstance();

@@ -1,10 +1,20 @@
 package com.ext.teros.message_connector.rest;
 
+import com.ext.teros.message_connector.rest.information.ProgramInformation;
 import com.ext.teros.message_connector.spec.MessageConnectorSpec;
+
+import java.util.Properties;
 
 public class Executor implements MessageConnectorSpec {
 
     String connectorMessage = "";
+
+    //extra
+    private ProgramInformation programInformation;
+
+    public Executor() {
+        programInformation = new ProgramInformation();
+    }
 
     @Override
     public void loadConfig(String s) throws Exception {
@@ -27,31 +37,11 @@ public class Executor implements MessageConnectorSpec {
     }
 
     @Override
-    public void preInput() throws Exception {
-
-    }
-
-    @Override
     public void input() throws Exception {
     }
 
     @Override
-    public void postInput() throws Exception {
-
-    }
-
-    @Override
-    public void preOutput() throws Exception {
-
-    }
-
-    @Override
     public void output() throws Exception {
-    }
-
-    @Override
-    public void postOutput() throws Exception {
-
     }
 
     @Override
@@ -87,5 +77,15 @@ public class Executor implements MessageConnectorSpec {
     @Override
     public void setData(String s) throws Exception {
         this.connectorMessage = s;
+    }
+
+    @Override
+    public String getConnectorType() throws Exception {
+        return programInformation.getType();
+    }
+
+    @Override
+    public String getConnectorVersion() throws Exception {
+        return programInformation.getVersion();
     }
 }

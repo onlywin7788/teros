@@ -80,15 +80,24 @@ public class RequestRouteServiceImpl {
         routeListModel.setId(routeId);
 
         // set predicates
-        HashMap predicatesMap = new HashMap();
-        HashMap predicatesArgsMap = new HashMap();
+        HashMap predicatesPathMap = new HashMap();
+        HashMap predicatesPathArgsMap = new HashMap();
+        HashMap predicatesMethodMap = new HashMap();
+        HashMap predicatesMethodArgsMap = new HashMap();
         List predicatesList = new ArrayList();
 
-        predicatesMap.put("name", "Method");
-        predicatesArgsMap.put("type", method);
-        predicatesMap.put("args", predicatesArgsMap);
+        // path
+        predicatesPathMap.put("name", "Path");
+        predicatesPathArgsMap.put("_genkey_0", sourceUri);
+        predicatesPathMap.put("args", predicatesPathArgsMap);
+        predicatesList.add(predicatesPathMap);
 
-        predicatesList.add(predicatesMap);
+        // method
+        predicatesMethodMap.put("name", "Method");
+        predicatesMethodArgsMap.put("type", method);
+        predicatesMethodMap.put("args", predicatesMethodArgsMap);
+        predicatesList.add(predicatesMethodMap);
+
         routeListModel.setPredicates(predicatesList);
 
         // set filter

@@ -23,3 +23,8 @@ eureka:
       defaultZone: ${EUREKA_URI:http://10.10.2.102:8761/eureka}
   instance:
     preferIpAddress: true
+extra:
+  config:
+    path: e:/teros_home/config/data-service/config/interface/rest-to-kafka.json
+  env:
+    teros_home: e:/teros_home

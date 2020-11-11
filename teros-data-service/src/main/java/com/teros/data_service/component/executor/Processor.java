@@ -3,6 +3,7 @@ package com.teros.data_service.component.executor;
 
 import com.ext.teros.message_connector.spec.MessageConnectorSpec;
 import com.ext.teros.message_processor.spec.MessageProcessorSpec;
+import com.teros.data_service.common.parser.JsonParser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -20,9 +21,11 @@ public class Processor {
     MessageConnectorSpec outputConnector = null;
     MessageProcessorSpec messageProcessor = null;
 
+    private final JsonParser jsonParser;
     private final Loader loader;
 
-    public Processor(Loader loader) {
+    public Processor(JsonParser jsonParser, Loader loader) {
+        this.jsonParser = jsonParser;
         this.loader = loader;
     }
 
@@ -37,14 +40,30 @@ public class Processor {
         messageProcessor = loader.getMessageProcessor();
         outputConnector = loader.getOutputConnector();
 
-        loadConfig(configPath);
-
+        String contents = loader.getConfigContents();
+        loadConfig(contents);
     }
 
-    public void loadConfig(String config) throws Exception {
-        inputConnector.loadConfig(config);
-        messageProcessor.loadConfig(config);
-        outputConnector.loadConfig(config);
+    public void loadConfig(String configContents) throws Exception {
+
+        String inputConfig = jsonParser.getJsonElementFromPath(configContents, "config.interface.input").toString();
+        String processorConfig = jsonParser.getJsonElementFromPath(configContents, "config.interface.processor").toString();
+        String outputConfig = jsonParser.getJsonElementFromPath(configContents, "config.interface.output").toString();
+
+        // input connector
+        inputConnector.loadConfig(inputConfig);
+        log.info(String.format("load component::input Connector => type :[%s], version:[%s]"
+                , inputConnector.getConnectorType(), inputConnector.getConnectorVersion()));
+
+        // message processor
+        messageProcessor.loadConfig(processorConfig);
+        log.info(String.format("load component::message processor => version:[%s]"
+                , inputConnector.getConnectorVersion()));
+
+        // output connector
+        outputConnector.loadConfig(outputConfig);
+        log.info(String.format("load component::output Connector => type :[%s], version:[%s]"
+                , inputConnector.getConnectorType(), inputConnector.getConnectorVersion()));
     }
 
     public void initialize() throws Exception {
@@ -99,25 +118,39 @@ public class Processor {
 
         String data = "";
 
-        // input connector
+
+        /*--------------------- input --------------------------*/
+
+        log.info(String.format("Execute input Connector => type :[%s], version:[%s]"
+                , inputConnector.getConnectorType(), inputConnector.getConnectorVersion()));
+
         inputConnector.input();
         data = inputConnector.getData();
-
-        log.info("--------------------- input ---------------------------");
         log.info(data);
 
-        // processor
+        /*--------------------- processor --------------------------*/
+
+        log.info(String.format("Execute Message Processor => type :[%s], version:[%s]"
+                , messageProcessor.getProcessorType(), messageProcessor.getProcessorVersion()));
+
+        // input filter
+        data = messageProcessor.inputFilter(data);
+
         messageProcessor.input(data);
+        messageProcessor.process();
         data = messageProcessor.output();
 
-        log.info("--------------------- processor ---------------------------");
+        // output filter
+        data = messageProcessor.outputFilter(data);
         log.info(data);
 
-        // output connector
+        /*--------------------- output --------------------------*/
+
+        log.info(String.format("Execute output Connector => type :[%s], version:[%s]"
+                , outputConnector.getConnectorType(), outputConnector.getConnectorVersion()));
+
         outputConnector.setData(data);
         outputConnector.output();
-
-        log.info("--------------------- output ---------------------------");
         log.info(data);
 
     }

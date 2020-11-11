@@ -68,7 +68,7 @@ public class APIGWRouteSchedule {
             log.info(ruleTxt);
 
         } else if (statusCode == 204) {
-            log.info(String.format("Router List already applied / ROUTER_ID : [%s]", requestUid));
+            ;//log.info(String.format("Router List already applied / ROUTER_ID : [%s]", requestUid));
         } else {
             log.info("unknown http status code : " + statusCode);
         }
@@ -77,7 +77,7 @@ public class APIGWRouteSchedule {
     public void setConfigRoutePath()
     {
         configRouterFilePath = baseHome + File.separator + "config"
-                + File.separator + "data-service" + File.separator + "data-service-router.json";
+                + File.separator + "api-gateway" + File.separator + "api-gateway-router.json";
     }
 
     public ResponseEntity<String> requestRouter(String url) {

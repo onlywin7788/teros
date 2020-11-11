@@ -1,10 +1,18 @@
 package com.ext.teros.message_processor;
 
+import com.ext.teros.message_processor.information.ProgramInformation;
 import com.ext.teros.message_processor.spec.MessageProcessorSpec;
 
 public class Executor implements MessageProcessorSpec {
 
-    String processMessage = "";
+    String message = "";
+
+    //extra
+    private ProgramInformation programInformation;
+
+    public Executor() {
+        programInformation = new ProgramInformation();
+    }
 
     @Override
     public void loadConfig(String s) throws Exception {
@@ -21,28 +29,27 @@ public class Executor implements MessageProcessorSpec {
     }
 
     @Override
+    public String inputFilter(String s) throws Exception {
+        return s;
+    }
+
+    @Override
     public void input(String s) throws Exception {
-        this.processMessage = s;
+        this.message = s;
     }
 
     @Override
-    public void preFilter() throws Exception {
-
-    }
-
-    @Override
-    public void filter() throws Exception {
-
-    }
-
-    @Override
-    public void postFilter() throws Exception {
-
+    public void process() throws Exception {
     }
 
     @Override
     public String output() throws Exception {
-        return this.processMessage;
+        return this.message;
+    }
+
+    @Override
+    public String outputFilter(String s) throws Exception {
+        return s;
     }
 
     @Override
@@ -63,5 +70,15 @@ public class Executor implements MessageProcessorSpec {
     @Override
     public void uninitialize() throws Exception {
 
+    }
+
+    @Override
+    public String getProcessorType() throws Exception {
+        return programInformation.getType();
+    }
+
+    @Override
+    public String getProcessorVersion() throws Exception {
+        return programInformation.getVersion();
     }
 }

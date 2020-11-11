@@ -22,8 +22,7 @@ public class APIService {
                 new CommonException("EX"));
     }
 
-    public List<APIEntity> getAPIList()
-    {
+    public List<APIEntity> getAPIList() {
         return apiRepository.findAll();
     }
 
@@ -45,16 +44,20 @@ public class APIService {
 
         APIEntity api = getAPI(apiId);
         api.update(modelParamAPI.getApiName(), modelParamAPI.getVersion()
-                ,modelParamAPI.getTargetUrl(), modelParamAPI.getDescription());
+                , modelParamAPI.getTargetUrl(), modelParamAPI.getDescription());
         return apiId;
     }
 
     @Transactional
     public boolean deleteAPI(long apiId) {
         APIEntity api = getAPI(apiId);
-        if(api == null)
+        if (api == null)
             return false;
         apiRepository.delete(api);
         return true;
+    }
+
+    public long getCount() {
+        return apiRepository.count();
     }
 }

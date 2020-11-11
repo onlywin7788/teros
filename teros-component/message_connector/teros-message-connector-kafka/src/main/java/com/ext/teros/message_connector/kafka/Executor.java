@@ -1,6 +1,8 @@
 package com.ext.teros.message_connector.kafka;
 
-import com.ext.teros.message_connector.kafka.config.Config;
+import com.ext.teros.message_connector.kafka.config.Loader;
+import com.ext.teros.message_connector.kafka.information.ProgramInformation;
+import com.ext.teros.message_connector.kafka.config.model.Connection;
 import com.ext.teros.message_connector.spec.MessageConnectorSpec;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
@@ -12,26 +14,33 @@ import java.util.Properties;
 
 public class Executor implements MessageConnectorSpec {
 
-    Properties properties = null;
-    Config config = null;
-    Producer kafkaProducer = null;
-    String message = "";
+    private Properties properties = null;
+    private  Connection config = null;
+    private Producer kafkaProducer = null;
+    private String message = "";
+
+    // config
+    private Connection connection = null;
+    private Loader loader = new Loader();
+
+    //extra
+    private ProgramInformation programInformation;
 
     public Executor() {
         properties = new Properties();
-        config = new Config();
+        loader = new Loader();
+        programInformation = new ProgramInformation();
     }
 
     @Override
-    public void loadConfig(String s) throws Exception {
-
-        config.setConnection("10.10.2.102:9092");
-        config.setTopic("teros-kafka-topic");
+    public void loadConfig(String configString) throws Exception {
+        loader.loadConfig(configString);
+        connection = loader.getConnection();
     }
     @Override
     public void initialize() throws Exception {
 
-        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, config.getConnection());
+        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, connection.getHost() + ":" + connection.getPort());
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         kafkaProducer = new KafkaProducer<>(properties);
@@ -48,40 +57,20 @@ public class Executor implements MessageConnectorSpec {
     }
 
     @Override
-    public void preInput() throws Exception {
-
-    }
-
-    @Override
     public void input() throws Exception {
-
-    }
-
-    @Override
-    public void postInput() throws Exception {
-
-    }
-
-    @Override
-    public void preOutput() throws Exception {
 
     }
 
     @Override
     public void output() throws Exception {
 
-        ProducerRecord<String, String> record = new ProducerRecord<>(config.getTopic(), this.message);
+        ProducerRecord<String, String> record = new ProducerRecord<>(connection.getTopic(), this.message);
         kafkaProducer.send(record, (metadata, exception) -> {
             if (exception != null) {
-                // some exception
+                System.out.println("kafka data send failed.");
             }
         });
         kafkaProducer.flush();
-
-    }
-
-    @Override
-    public void postOutput() throws Exception {
 
     }
 
@@ -117,5 +106,15 @@ public class Executor implements MessageConnectorSpec {
     @Override
     public void setData(String s) throws Exception {
         this.message = s;
+    }
+
+    @Override
+    public String getConnectorType() throws Exception {
+        return programInformation.getType();
+    }
+
+    @Override
+    public String getConnectorVersion() throws Exception {
+        return programInformation.getVersion();
     }
 }
