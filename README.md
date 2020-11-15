@@ -6,6 +6,7 @@
 Teros 는 Cloud Foundary 기반의 마이크로 서비스 애플리케이션 플랫폼이다.
 API-Management 및 On-Premise 와 Cloud 환경의 데이터를 통합을 지원하여, 점차 고도화되고 있는 IT 의 복잡한 인프라 및 서비스 요구사항에 대한 솔루션을 제공해 주는 통합 플랫폼이다.
 
+
  ## Application 구성
 
 #### Dashboard
