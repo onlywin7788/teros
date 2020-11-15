@@ -13,8 +13,12 @@ import java.util.Map;
 @CrossOrigin(origins = "*")
 public class InputRestController {
 
-    @Value("${extra.config.path}")
-    private String configPath;
+    @Value("${extra.param.teros_home}")
+    private String terosHome;
+
+    @Value("${extra.param.interface_id}")
+    private String interfaceId;
+
     private boolean isInit = false;
 
     private final ExecutorService executorService;
@@ -28,7 +32,7 @@ public class InputRestController {
         try {
 
             if(isInit == false) {
-                executorService.load(configPath);
+                executorService.load(terosHome, interfaceId);
                 isInit = true;
             }
 

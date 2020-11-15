@@ -33,8 +33,8 @@ public class Executor implements MessageConnectorSpec {
     }
 
     @Override
-    public void loadConfig(String configString) throws Exception {
-        loader.loadConfig(configString);
+    public void loadConfig(String configPath) throws Exception {
+        loader.loadConfig(configPath);
         connection = loader.getConnection();
     }
     @Override

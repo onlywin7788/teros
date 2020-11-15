@@ -4,24 +4,32 @@ import com.ext.teros.message_connector.spec.MessageConnectorSpec;
 import com.ext.teros.message_processor.spec.MessageProcessorSpec;
 import com.teros.data_service.common.file.CommonFile;
 import com.teros.data_service.common.parser.JsonParser;
-import com.teros.data_service.component.executor.config.model.GlobalOption;
+import com.teros.data_service.common.parser.XmlParser;
+import org.springframework.stereotype.Component;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.stereotype.Component;
+
+import java.io.File;
 
 @Getter
 @Setter
 @Component
 public class Loader {
 
-    private final CommonFile commonFile;
-    private final JsonParser jsonParser;
+    private final String BASE_CONFIG_NAME = "interface-main.xml";
 
-    GlobalOption inputGlobalOption = new GlobalOption();
-    GlobalOption outputGlobalOption = new GlobalOption();
-    GlobalOption processorGlobalOption = new GlobalOption();
+    private final String FLOW_TYPE_INPUT_CONNECTOR = "input-connector";
+    private final String FLOW_TYPE_OUTPUT_CONNECTOR = "output-connector";
+    private final String FLOW_TYPE_INPUT_FILTER = "output-filter";
+    private final String FLOW_TYPE_OUTPUT_FILTER = "output-filter";
 
-    String configContents = "";
+    private String configBasePath = null;
+
+    private CommonFile commonFile;
+    private JsonParser jsonParser;
+    private XmlParser xmlParser;
 
     // load component
     MessageConnectorSpec inputConnector = null;
@@ -33,58 +41,72 @@ public class Loader {
     String interfaceVersion;
     String interfacePattern;
 
-    public Loader(CommonFile commonFile
-            , JsonParser jsonParser) {
-        this.commonFile = commonFile;
-        this.jsonParser = jsonParser;
+    public Loader() {
+        this.commonFile = new CommonFile();
+        this.jsonParser = new JsonParser();
+        this.xmlParser = new XmlParser();
     }
 
-    public void load(String filePath) throws Exception {
+    public void load(String homePath, String interfaceId) throws Exception {
         try {
-            loadConfig(filePath);
-            loadComponent();
+            this.configBasePath = homePath + File.separator + "config" + File.separator + "data-service"
+                    + File.separator + "interface" + File.separator + interfaceId;
+
+            String baseConfig = configBasePath + File.separator + BASE_CONFIG_NAME;
+            String xmlFlowPath = "/config/flow/node";
+
+            xmlParser.loadFile(baseConfig);
+            NodeList nodeList = xmlParser.getNodeList(xmlFlowPath);
+
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                Node node = nodeList.item(i);
+                String nodeFileName = xmlParser.getNodeAttrFromNode(node, "file");
+                String nodeType = xmlParser.getNodeAttrFromNode(node, "type");
+
+                if (nodeType.equals(FLOW_TYPE_INPUT_CONNECTOR) == true
+                        || nodeType.equals(FLOW_TYPE_OUTPUT_CONNECTOR) == true) {
+                    loadComponent(nodeFileName, nodeType);
+                }
+            }
         } catch (Exception e) {
             throw e;
         }
     }
 
-    public String getConfigContents() {
-        return configContents;
-    }
-
-    private void loadConfig(String filePath) throws Exception {
-        configContents = commonFile.readFile(filePath);
-        String optionValue = "";
-
-        // global option - input component
-        optionValue = jsonParser.getJsonElementFromPath(configContents, "config.interface.input.component.path").getAsString();
-        inputGlobalOption.setPath(optionValue);
-
-        // global option - output component
-        optionValue = jsonParser.getJsonElementFromPath(configContents, "config.interface.output.component.path").getAsString();
-        outputGlobalOption.setPath(optionValue);
-
-        // global option - message processor
-        optionValue = jsonParser.getJsonElementFromPath(configContents, "config.interface.processor.component.path").getAsString();
-        processorGlobalOption.setPath(optionValue);
-
-    }
-
-    private void loadComponent() throws Exception {
+    private void loadComponent(String nodeFileName, String nodeType) throws Exception {
         try {
-            // class dynamic loading
-            Class loadInputConnector = Class.forName(inputGlobalOption.getPath());
-            Class loadOutputConnector = Class.forName(outputGlobalOption.getPath());
-            Class loadMessageProcessor = Class.forName(processorGlobalOption.getPath());
+            XmlParser xmlParserProp = new XmlParser();
 
-            Object inputConnectorInstance = loadInputConnector.getDeclaredConstructor().newInstance();
-            Object outputConnectorInstance = loadOutputConnector.getDeclaredConstructor().newInstance();
-            Object messageProcesorInstance = loadMessageProcessor.getDeclaredConstructor().newInstance();
+            String nodeConfigPath = this.configBasePath + File.separator + "flow" + File.separator + nodeFileName;
+            String nodeComponentPath = "/node/properties/param";
+            String nodeComponentPathName = "component.path";
+            String componentPath = "";
+
+            xmlParserProp.loadFile(nodeConfigPath);
+            NodeList nodeList = xmlParserProp.getNodeList(nodeComponentPath);
+
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                Node node = nodeList.item(i);
+                String paramName = xmlParserProp.getNodeAttrFromNode(node, "name");
+                if (paramName.equals(nodeComponentPathName) == true) {
+                    componentPath = xmlParserProp.getNodeAttrFromNode(node, "value");
+                    break;
+                }
+            }
+
+            // class dynamic loading
+            Class loadClass = Class.forName(componentPath);
+            Object loadInstance = loadClass.getDeclaredConstructor().newInstance();
 
             // upcasting super class
-            inputConnector = (MessageConnectorSpec) inputConnectorInstance;
-            outputConnector = (MessageConnectorSpec) outputConnectorInstance;
-            messageProcessor = (MessageProcessorSpec) messageProcesorInstance;
+            if (nodeType.equals(FLOW_TYPE_INPUT_CONNECTOR)) {
+                this.inputConnector = (MessageConnectorSpec) loadInstance;
+                this.inputConnector.loadConfig(nodeConfigPath);
+            }
+            if (nodeType.equals(FLOW_TYPE_OUTPUT_CONNECTOR)) {
+                this.outputConnector = (MessageConnectorSpec) loadInstance;
+                this.outputConnector.loadConfig(nodeConfigPath);
+            }
 
         } catch (Exception e) {
             throw e;

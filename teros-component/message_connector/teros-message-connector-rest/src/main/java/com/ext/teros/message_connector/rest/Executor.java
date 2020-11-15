@@ -7,7 +7,7 @@ import java.util.Properties;
 
 public class Executor implements MessageConnectorSpec {
 
-    String connectorMessage = "";
+    String messageObject = "";
 
     //extra
     private ProgramInformation programInformation;
@@ -71,12 +71,12 @@ public class Executor implements MessageConnectorSpec {
 
     @Override
     public String getData() throws Exception {
-        return connectorMessage;
+        return messageObject;
     }
 
     @Override
     public void setData(String s) throws Exception {
-        this.connectorMessage = s;
+        this.messageObject = s;
     }
 
     @Override

@@ -1,30 +1,30 @@
 package com.teros.data_service.service.executor;
 
-import com.teros.data_service.component.executor.Executor;
+import com.teros.data_service.component.executor.ExecutorMain;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ExecutorService {
-    private final Executor executor;
+    private final ExecutorMain executorMain;
 
-    public ExecutorService(Executor executor) {
-        this.executor = executor;
+    public ExecutorService(ExecutorMain executorMain) {
+        this.executorMain = executorMain;
     }
 
-    public void load(String configPath) throws Exception {
-        executor.load(configPath);
+    public void load(String homePath, String interfaceId) throws Exception {
+        executorMain.load(homePath, interfaceId);
     }
 
     public void executeAssignData(String data) throws Exception {
-        executor.preAssignMessage(data);
+        executorMain.preAssignMessage(data);
     }
 
     public void execute() throws Exception {
-        executor.execute();
-        executor.unload();
+        executorMain.execute();
+        executorMain.unload();
     }
 
     public void unload() throws Exception {
-        executor.unload();
+        executorMain.unload();
     }
 }
