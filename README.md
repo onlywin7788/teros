@@ -14,7 +14,6 @@ API-Management 및 On-Premise 와 Cloud 환경의 데이터를 통합을 지원�
 
 Administor & Developer 를 위한 API 개발, 플로우 디자인, 모니터링 등의 통합 서비스를 제공하는 HTML5 기반의 통합 대시보드이다.
 <br/>
-
 #### Central Server
 
 Teros 플랫폼에서 제공되는 모든 Application 에 대한 명령 발행 및 관리를 제공하는 중앙 서버. 기능 확장을 위한 모니터링, 통계 서비스 등의 모듈을 포함한다.
