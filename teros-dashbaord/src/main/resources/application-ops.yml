@@ -1,0 +1,4 @@
+# application-ops.yml
+logging:
+  level:
+    root: info

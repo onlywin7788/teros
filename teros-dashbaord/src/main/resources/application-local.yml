@@ -1,0 +1,20 @@
+# application-dev.yml
+logging:
+  level:
+    root: info
+spring:
+  profiles: local
+  datasource:
+    url: jdbc:mariadb://10.10.2.102:3306/TEROS_METADB?useSSL=false&useUnicode=true&characterEncoding=utf8
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: root
+    password: mocomsys1$
+    jpa:
+      open-in-view: false
+      generate-ddl: true
+      show-sql: true
+      hibernate:
+        ddl-auto: update
+      properties:
+        show_sql: true
+        format_sql: true

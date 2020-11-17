@@ -1,0 +1,36 @@
+server:
+  port: 38080
+
+# actucator 모든 정보
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+# spring option
+spring:
+  application:
+    name: teros-central-server
+  profiles:
+    active: local # default setting
+  messages:
+    basename: i18n/exception
+    encoding: UTF-8
+  devtools:
+    livereload:
+      enabled: true
+#  thymeleaf:
+#    prefix: file:src/main/resources/templates/
+#    cache: false
+#    resources:
+#      static-locations: file:src/main/resources/static/
+#      cache-period: 0
+#eureka:
+#  client:
+#    registryFetchIntervalSeconds: 5
+#    enabled: true
+#    serviceUrl:
+#      defaultZone: ${EUREKA_URI:http://10.10.2.102:8761/eureka}
+#  instance:
+#    preferIpAddress: true

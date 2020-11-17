@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/layout}"
+>
+  <head>
+    <script type="text/javascript">
+      function btn_edit_api(id) {
+        location.href = "/development/api/" + id;
+      }
+
+      function onCreateList() {
+        res = requestAPI("http://localhost:8761/v1/apps", null, "GET");
+        return res;
+      }
+
+      $(document).ready(function () {
+        /*
+              $("#btn-api-create").click(function () {
+                location.href = "/development/api/create";
+              });
+              */
+        onCreateList();
+      });
+    </script>
+  </head>
+
+  <div layout:fragment="content">
+    <div class="wrapper">
+      <!-- Content Wrapper. Contains page content -->
+      <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+          <div class="container-fluid">
+            <div class="row mb-2">
+              <div class="col-sm-6">
+                <h1>서비스 모니터링</h1>
+              </div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                  <li class="breadcrumb-item"><a href="/">홈</a></li>
+                  <li class="breadcrumb-item active">서비스 모니터링</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+          <!-- /.container-fluid -->
+        </section>
+
+        <!---------------------- Main content ---------------------->
+        <section class="content">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h3 class="card-title">서비스 등록 상태</h3>
+                  </div>
+                  <!-- /.card-header -->
+                  <div class="card-body">
+                    <table
+                      id="example2"
+                      class="table table-bordered table-hover"
+                    >
+                      <thead style="text-align: left">
+                        <tr>
+                          <th style="width: 10px">#</th>
+                          <th>서비스명</th>
+                          <th style="width: 300px">Host 정보</th>
+                          <th style="width: 300px">Port</th>
+                          <th style="width: 300px">기동 시각</th>
+                          <th style="width: 200px">상태</th>
+                        </tr>
+                      </thead>
+                      <tbody id="tbody-api-list"></tbody>
+                    </table>
+                  </div>
+                  <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+              </div>
+              <!-- /.col -->
+            </div>
+            <!-- /.row -->
+          </div>
+          <!-- /.container-fluid -->
+        </section>
+        <!-- /.content -->
+      </div>
+      <!-- /.content-wrapper -->
+    </div>
+  </div>
+</html>
