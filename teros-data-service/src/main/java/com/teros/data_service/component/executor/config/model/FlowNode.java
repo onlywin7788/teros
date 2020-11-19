@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Getter
 @Setter
-public class GlobalOption {
+public class FlowNode {
+    String file;
     String type;
-    String path;
 }

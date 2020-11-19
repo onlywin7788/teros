@@ -4,9 +4,12 @@ package com.teros.data_service.component.executor;
 import com.ext.teros.message_connector.spec.MessageConnectorSpec;
 import com.ext.teros.message_processor.spec.MessageProcessorSpec;
 import com.teros.data_service.common.parser.JsonParser;
+import com.teros.data_service.component.executor.config.model.FlowNode;
 import com.teros.data_service.component.processor.MessageProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
 
 @Slf4j
 @Component
@@ -25,6 +28,9 @@ public class Executor {
     private JsonParser jsonParser;
     private Loader loader;
 
+    // load flow node
+    ArrayList<FlowNode> flowNodelist = null;
+
     public Executor() {
         this.messageProcessor = new MessageProcessor();
         this.jsonParser = new JsonParser();
@@ -37,6 +43,8 @@ public class Executor {
 
     public void load(String HomePath, String interfaceId) throws Exception {
         loader.load(HomePath, interfaceId);
+
+        flowNodelist = loader.getFlowNodelist();
         inputConnector = loader.getInputConnector();
         outputConnector = loader.getOutputConnector();
     }
@@ -85,7 +93,7 @@ public class Executor {
         outputConnector.setData(data);
     }
 
-    public String  outputConnectorGetData(String data) throws Exception {
+    public String outputConnectorGetData(String data) throws Exception {
         return outputConnector.getData();
     }
 

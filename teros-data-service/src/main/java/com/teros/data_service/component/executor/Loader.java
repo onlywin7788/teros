@@ -5,6 +5,7 @@ import com.ext.teros.message_processor.spec.MessageProcessorSpec;
 import com.teros.data_service.common.file.CommonFile;
 import com.teros.data_service.common.parser.JsonParser;
 import com.teros.data_service.common.parser.XmlParser;
+import com.teros.data_service.component.executor.config.model.FlowNode;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -12,6 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.File;
+import java.util.ArrayList;
 
 @Getter
 @Setter
@@ -20,8 +22,8 @@ public class Loader {
 
     private final String BASE_CONFIG_NAME = "interface-main.xml";
 
-    private final String FLOW_TYPE_INPUT_CONNECTOR = "input-connector";
-    private final String FLOW_TYPE_OUTPUT_CONNECTOR = "output-connector";
+    private final String FLOW_TYPE_INPUT_CONNECTOR = "input";
+    private final String FLOW_TYPE_OUTPUT_CONNECTOR = "output";
     private final String FLOW_TYPE_INPUT_FILTER = "output-filter";
     private final String FLOW_TYPE_OUTPUT_FILTER = "output-filter";
 
@@ -34,14 +36,12 @@ public class Loader {
     // load component
     MessageConnectorSpec inputConnector = null;
     MessageConnectorSpec outputConnector = null;
-    MessageProcessorSpec messageProcessor = null;
 
-    // global Option
-    String interfaceName;
-    String interfaceVersion;
-    String interfacePattern;
+    // load flow node
+    ArrayList<FlowNode> flowNodelist = null;
 
     public Loader() {
+        this.flowNodelist = new ArrayList<FlowNode>();
         this.commonFile = new CommonFile();
         this.jsonParser = new JsonParser();
         this.xmlParser = new XmlParser();
@@ -60,13 +60,20 @@ public class Loader {
 
             for (int i = 0; i < nodeList.getLength(); i++) {
                 Node node = nodeList.item(i);
-                String nodeFileName = xmlParser.getNodeAttrFromNode(node, "file");
+                String nodeFile = xmlParser.getNodeAttrFromNode(node, "file");
                 String nodeType = xmlParser.getNodeAttrFromNode(node, "type");
 
                 if (nodeType.equals(FLOW_TYPE_INPUT_CONNECTOR) == true
                         || nodeType.equals(FLOW_TYPE_OUTPUT_CONNECTOR) == true) {
-                    loadComponent(nodeFileName, nodeType);
+                    loadComponent(nodeFile, nodeType);
                 }
+
+                // save flow node
+                FlowNode flowNode = new FlowNode();
+                flowNode.setFile(nodeFile);
+                flowNode.setType(nodeType);
+
+                flowNodelist.add(flowNode);
             }
         } catch (Exception e) {
             throw e;

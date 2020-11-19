@@ -13,29 +13,18 @@ import java.util.Map;
 @CrossOrigin(origins = "*")
 public class InputRestController {
 
-    @Value("${extra.param.teros_home}")
-    private String terosHome;
-
-    @Value("${extra.param.interface_id}")
-    private String interfaceId;
-
     private boolean isInit = false;
 
     private final ExecutorService executorService;
 
-    public InputRestController(ExecutorService executorService) {
+    public InputRestController(ExecutorService executorService) throws Exception {
         this.executorService = executorService;
+        this.executorService.load();
     }
 
     @RequestMapping(value = "/**", method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
     public String inputData(@RequestHeader Map<String, String> headers, @RequestBody String body) {
         try {
-
-            if(isInit == false) {
-                executorService.load(terosHome, interfaceId);
-                isInit = true;
-            }
-
             executorService.executeAssignData(body);
             executorService.execute();
         } catch (Exception e) {
