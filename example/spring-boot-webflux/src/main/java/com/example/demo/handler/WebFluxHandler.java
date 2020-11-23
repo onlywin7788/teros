@@ -8,9 +8,6 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-
-
-import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -22,7 +19,7 @@ public class WebFluxHandler {
 
     //  path 데이터 입력받아서 대문자로 변환 후 반환
     public Mono<ServerResponse> filtertest(ServerRequest request) {
-        String req = request.path().toString();
+        String req = request.path();
         Flux<String> aaa = Flux.just(req).map(String::toLowerCase);
 
         return ServerResponse.ok()
